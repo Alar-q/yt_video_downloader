@@ -33,7 +33,33 @@ Use this environment:
 source .venv/bin/activate
 ```
 
+---
+
+**Git**
+
+Add this environment to .gitignore:
+```sh
+echo ".venv" >> .gitignore
+```
+
+---
+
+**To recreate environment**
+
+(Already done) Firstly, freeze current environment packages:
+```sh
+pip freeze > requirements.txt
+```
+
+To recreate environment in future, run:
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+
 You can check if it works:
 ```sh
-pip install numpy
+pip install pytube
 ```
