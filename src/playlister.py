@@ -6,20 +6,22 @@ def playlist_links(playlist_url):
 
 	p = Playlist(playlist_url)
 
-	print(f'Playlist: {p.title}')
+	print(f'(playlister) Playlist: {p.title}')
 
 	# Пользовательские параметры
 	# Links of the videos to be downloaded
 
 	links = []
 
+	print(f'(playlister) All videos:')
+
 	for url in p.video_urls:
 		try:
 			yt = YouTube(url)
 		except VideoUnavailable:
-			print(f'Video {url} is unavaialable, skipping.')
+			print(f'(playlister)	Video {url} is unavaialable, skipping.')
 		else:
-			print(f'Video URL: {url}')
+			print(f'(playlister)	Video URL: {url}')
 			links.append(url)
 
 	# Вывод списка видео URL
