@@ -63,3 +63,9 @@ You can check if it works:
 ```sh
 pip install pytube
 ```
+
+
+Updating packages in a virtual environment:
+```sh
+pip install --upgrade -r requirements.txt
+```
