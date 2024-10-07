@@ -1,5 +1,4 @@
-from pytubefix import YouTube
-from playlister import playlist_links
+from pytubefix import Playlist, YouTube
 from videos_downloader import download_videos
 from titles_normalizer import normalize
 
@@ -13,7 +12,8 @@ def binary_confirm(prompt):
         if answer in ['y', 'n']:
             return answer == 'y'
         else:
-            print("Enter ‘y’ for confirmation or ‘n’ for cancellation, please.")
+            print("\nEnter ‘y’ for confirmation or ‘n’ for cancellation, please.")
+
 
 def confirm(prompt):
    while True:
@@ -21,7 +21,7 @@ def confirm(prompt):
         if answer in ['y', 'n', 'a', 'x']:
             return answer
         else:
-            print("Please enter ‘y’ for yes, ‘n’ for no, ‘a’ to select all, or ‘x’ to reject all.")
+            print("\nPlease enter ‘y’ for yes, ‘n’ for no, ‘a’ to select all else, or ‘x’ to reject all else.")
 
 
 def collect_videos_to_download(playlists):
@@ -30,21 +30,24 @@ def collect_videos_to_download(playlists):
     """
     confirmed = []
 
-    for playlist in playlists:
-        title, links = playlist_links(playlist_url=playlist)
+    for playlist_url in playlists:
+
+        playlist = Playlist(playlist_url)
+
+        video_urls = playlist.video_urls
 
         # Запрашиваем подтверждение для плейлиста
-        if binary_confirm(f"\nPlaylist name is '{title}'. Do you want to process this playlist?"):
+        if binary_confirm(f"\nPlaylist name is '{playlist.title}'. Do you want to process this playlist?"):
             confirmed_videos = []
-            for i, link in enumerate(links):
+            for i, link in enumerate(video_urls):
                 yt = YouTube(link)
 
                 # Запрашиваем подтверждение для каждого видео
                 answer = confirm(f"\nDownload video named '{yt.title}'?")
 
                 if answer == 'a':
-                    # Выбираем все видео из плейлиста
-                    for j, linkj in enumerate(links):
+                    # Выбираем нынешнее и все оставшиеся видео
+                    for j, linkj in enumerate(video_urls):
                         if(j<i):
                             continue
                         ytj = YouTube(linkj)
@@ -53,21 +56,22 @@ def collect_videos_to_download(playlists):
                     break
 
                 elif answer == 'x':
-                    print(f"\nSkipping all videos in playlist: '{title}'")
+                    print(f"\nSkipping all videos in playlist: '{playlist.title}'")
                     break
 
                 elif answer == 'y':
                     confirmed_videos.append({'title': yt.title, 'link': link, 'serial_number':i})
 
-            print(confirmed_videos)
+            print("confirmed_videos:", confirmed_videos)
 
             # Если были выбраны видео для скачивания
-            if confirmed_videos:
-                confirmed.append((title, confirmed_videos))
+            if len(confirmed_videos) > 0:
+                confirmed.append((playlist.title, confirmed_videos))
             else:
-                print(f"\nNo videos selected from playlist: '{title}'")
+                print(f"\nNo videos selected from playlist: '{playlist.title}'")
+
         else:
-            print(f"\nSkipping playlist: '{title}'")
+            print(f"\nSkipping playlist: '{playlist.title}'")
 
     return confirmed
 
@@ -84,7 +88,8 @@ if __name__ == "__main__":
     confirmed = collect_videos_to_download(playlists)
 
 
-    print('\n\n')
+    # Убеждаемся, что все правильно
+    print('\n\n------\nFollowing selected videos from the playlists will be downloaded:\n')
     for title, videos in confirmed:
         print('------')
         print(title)
@@ -94,12 +99,10 @@ if __name__ == "__main__":
 
 
     # Если есть подтвержденные видео, начинаем скачивание
-    if confirmed:
+    if len(confirmed) > 0:
         print("\nStarting the download process...")
         for title, videos in confirmed:
             print(f"\nStarting download for playlist: '{title}' with {len(videos)} video(s).")
-            # links = [video['link'] for video in videos]
-            # print("links", links)
             download_videos(videos, max_resolution=1080, output_directory=f"./{normalize(title)}")
 
     else:

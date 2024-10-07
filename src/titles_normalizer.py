@@ -1,7 +1,7 @@
 import re
 
 
-def normalize(title = 'Essence of linear algebra'):
+def normalize(title):
 
     # Преобразуем название файла в нормальный вид
     # Убираем символы, которые не разрешены в названиях файлов
@@ -14,5 +14,5 @@ def normalize(title = 'Essence of linear algebra'):
 
 
 if __name__ == "__main__":
-    title = normalize()
+    title = normalize(title='Essence of linear algebra')
     print(title)
