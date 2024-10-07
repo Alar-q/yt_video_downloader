@@ -51,7 +51,7 @@ def collect_videos_to_download(playlists):
                         if(j<i):
                             continue
                         ytj = YouTube(linkj)
-                        confirmed_videos.append({'title': ytj.title, 'link': linkj, 'serial_number':j})
+                        confirmed_videos.append({'title': ytj.title, 'link': linkj, 'serial_number':j+1})
 
                     break
 
@@ -60,7 +60,7 @@ def collect_videos_to_download(playlists):
                     break
 
                 elif answer == 'y':
-                    confirmed_videos.append({'title': yt.title, 'link': link, 'serial_number':i})
+                    confirmed_videos.append({'title': yt.title, 'link': link, 'serial_number':i+1})
 
             print("confirmed_videos:", confirmed_videos)
 
@@ -80,6 +80,7 @@ def collect_videos_to_download(playlists):
 
 if __name__ == "__main__":
     playlists = [
+        'https://www.youtube.com/playlist?list=PL6-BrcpR2C5Q1ivGTQcglILJG6odT2oCY',
         'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab',
         'https://www.youtube.com/playlist?list=PL6-BrcpR2C5RYoCAmC8VQp_rxSh0i_6C6'
     ]
